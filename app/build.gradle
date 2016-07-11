@@ -31,5 +31,7 @@ dependencies {
     provided 'javax.annotation:jsr250-api:1.0'
 
     compile 'org.greenrobot:eventbus:3.0.0'
+    compile "com.squareup.retrofit2:retrofit:$rootProject.ext.retrofitVersion"
+    compile "com.squareup.retrofit2:converter-gson:$rootProject.ext.gsonconverterVersion"
 
 }

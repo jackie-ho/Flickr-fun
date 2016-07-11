@@ -25,5 +25,7 @@ task clean(type: Delete) {
 ext {
     rxjavaVersion = '1.1.7'
     daggerVersion = '2.4'
+    retrofitVersion = '2.1.0'
+    gsonconverterVersion = '2.1.0'
 
 }

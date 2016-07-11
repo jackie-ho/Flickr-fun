@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">Flickr Fun</string>
+    <string name="key">b71dade4d2c0865bd805eab9c5a74199</string>
+    <string name="secret">170c3d243ce65f1f</string>
 </resources>
