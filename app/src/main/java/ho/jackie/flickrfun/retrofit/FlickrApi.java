@@ -3,7 +3,10 @@ package ho.jackie.flickrfun.retrofit;
 import java.util.List;
 
 import ho.jackie.flickrfun.retrofit.model.FlickrImages;
+import ho.jackie.flickrfun.retrofit.model.FlickrPhotos;
 import retrofit2.http.GET;
+import retrofit2.http.Part;
+import retrofit2.http.Path;
 import retrofit2.http.Query;
 import rx.Observable;
 
@@ -13,8 +16,11 @@ import rx.Observable;
 public interface FlickrApi {
 
 
-    @GET("addlink/{flickrquery}")
-    Observable<List<FlickrImages>> images(@Query("flickrquery") String query);
+    @GET("/rest/?methods=flickr.{item}.{method}&format=json&nojsoncallback=1")
+    Observable<FlickrPhotos> images(@Query("tags") String query,
+                                    @Query("api_key") String key,
+                                    @Path("item") String item,
+                                    @Path("method") String method);
 
 
 }

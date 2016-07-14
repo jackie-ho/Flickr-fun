@@ -1,14 +1,19 @@
 package ho.jackie.flickrfun.di.modules;
 
 import android.app.Application;
+import android.content.Context;
+import android.content.SharedPreferences;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.EventBusBuilder;
 
 import java.io.IOException;
 
+import javax.inject.Named;
+
 import dagger.Module;
 import dagger.Provides;
+import ho.jackie.flickrfun.app.MyApp;
 import ho.jackie.flickrfun.di.scopes.AppScope;
 import ho.jackie.flickrfun.retrofit.FlickrApi;
 import ho.jackie.flickrfun.retrofit.FlickrService;
@@ -29,6 +34,7 @@ public class AppModule {
 
     private final Application app;
 
+    private static final String PREFERENCES = "myAppPrefs";
     private final String BASE_URL = "https://api.flickr.com/services";
 
 
@@ -42,13 +48,20 @@ public class AppModule {
             .baseUrl(BASE_URL);
 
 
-    public AppModule(Application app) {
+    public AppModule(MyApp app) {
         this.app = app;
     }
 
     @Provides
     @AppScope
-    public Application providesAppContext() {
+    public SharedPreferences providesSharedPreferences(@Named("AppContext") Context appContext) {
+        return appContext.getSharedPreferences(PREFERENCES, Context.MODE_PRIVATE);
+    }
+
+    @Provides
+    @AppScope
+    @Named("AppContext")
+    public Context providesAppContext() {
         return app;
     }
 

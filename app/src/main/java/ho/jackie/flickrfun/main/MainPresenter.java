@@ -34,4 +34,9 @@ public class MainPresenter implements MainContract.ActionListener {
     public void onDestroy() {
         mainView.clear();
     }
+
+    @Override
+    public void searchForImages(String query) {
+
+    }
 }
