@@ -13,4 +13,7 @@ public class FlickrPhotos {
     int total;
     List<FlickrImages> photo;
 
+    public List<FlickrImages> getPhotos() {
+        return photo;
+    }
 }

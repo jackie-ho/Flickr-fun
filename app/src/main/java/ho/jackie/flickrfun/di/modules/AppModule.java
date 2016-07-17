@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.SharedPreferences;
 
 import org.greenrobot.eventbus.EventBus;
-import org.greenrobot.eventbus.EventBusBuilder;
 
 import java.io.IOException;
 
@@ -13,10 +12,10 @@ import javax.inject.Named;
 
 import dagger.Module;
 import dagger.Provides;
+import ho.jackie.flickrfun.R;
 import ho.jackie.flickrfun.app.MyApp;
 import ho.jackie.flickrfun.di.scopes.AppScope;
-import ho.jackie.flickrfun.retrofit.FlickrApi;
-import ho.jackie.flickrfun.retrofit.FlickrService;
+import okhttp3.HttpUrl;
 import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -83,10 +82,15 @@ public class AppModule {
             public Response intercept(Chain chain) throws IOException {
                 Request original = chain.request();
 
+                //Add api key
+                HttpUrl urlWithKey = original.url().newBuilder()
+                        .addQueryParameter("api_key", app.getString(R.string.key))
+                        .build();
+
                 Request.Builder requestBuilder = original.newBuilder()
-                        .header("Authorization", "something")
-                        .header("Accept", "application/json")
-                        .method(original.method(), original.body());
+                        .header("Authorization", "not necessary")
+                        .method(original.method(), original.body())
+                        .url(urlWithKey);
 
                 Request request = requestBuilder.build();
                 return chain.proceed(request);

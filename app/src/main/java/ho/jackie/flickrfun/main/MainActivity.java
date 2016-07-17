@@ -10,11 +10,16 @@ import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
 
+import java.util.List;
+
 import javax.inject.Inject;
 
 import butterknife.BindView;
+import butterknife.BindViews;
 import butterknife.ButterKnife;
 import ho.jackie.flickrfun.R;
+import ho.jackie.flickrfun.retrofit.model.FlickrImages;
+import ho.jackie.flickrfun.retrofit.model.FlickrPhotos;
 import retrofit2.Retrofit;
 
 public class MainActivity extends AppCompatActivity implements MainContract.View{
@@ -23,8 +28,8 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
     EditText searchEditText;
     @BindView(R.id.submit_search)
     Button submitButton;
-    @BindView(R.id.flickr_image)
-    ImageView flickrImage;
+    @BindViews({R.id.flickr_image1,R.id.flickr_image2, R.id.flickr_image3, R.id.flickr_image4})
+    List<ImageView> flickrImages;
 
 
     private MainPresenter mPresenter;
@@ -41,18 +46,32 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
 
     @Override
     public void onNetworkLost() {
-
+        //display textview and progressbar
     }
 
     @Override
     public void onNetworkReconnect() {
-
+    //hide textview and progressbar, display image if there is one
     }
 
     @Override
-    public void onSearchSuccess(String imageUrl) {
+    public void onSearchSuccess(FlickrPhotos photos) {
+
+        List<FlickrImages> flickrImagesList = photos.getPhotos();
+
+        for (FlickrImages image : flickrImagesList) {
+
+            StringBuilder urlBuilder = new StringBuilder();
+            urlBuilder.append("https://farm");
+            urlBuilder.append(image.getFarm());
+            urlBuilder.append(".staticflickr.com/");
+            urlBuilder.append(image.getServer());
+            urlBuilder.append("/" + image.getId() + "_");
+            urlBuilder.append(image.getSecret() + ".jpg");
+        }
+
         Picasso.with(this)
-                .load(imageUrl)
+                .load(urlBuilder.toString())
                 .into(flickrImage);
     }
 
