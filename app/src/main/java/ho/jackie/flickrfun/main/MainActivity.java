@@ -22,17 +22,18 @@ import ho.jackie.flickrfun.retrofit.model.FlickrImages;
 import ho.jackie.flickrfun.retrofit.model.FlickrPhotos;
 import retrofit2.Retrofit;
 
-public class MainActivity extends AppCompatActivity implements MainContract.View{
+public class MainActivity extends AppCompatActivity implements MainContract.View {
 
     @BindView(R.id.image_search_edit)
     EditText searchEditText;
     @BindView(R.id.submit_search)
     Button submitButton;
-    @BindViews({R.id.flickr_image1,R.id.flickr_image2, R.id.flickr_image3, R.id.flickr_image4})
+    @BindViews({R.id.flickr_image1, R.id.flickr_image2, R.id.flickr_image3, R.id.flickr_image4})
     List<ImageView> flickrImages;
 
 
     private MainPresenter mPresenter;
+    private Picasso.Builder picassoBuilder;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,7 +52,7 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
 
     @Override
     public void onNetworkReconnect() {
-    //hide textview and progressbar, display image if there is one
+        //hide textview and progressbar, display image if there is one
     }
 
     @Override
@@ -59,45 +60,56 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
 
         List<FlickrImages> flickrImagesList = photos.getPhotos();
 
-        for (FlickrImages image : flickrImagesList) {
+        for (int i = 0; i < 4; i++) {
 
             StringBuilder urlBuilder = new StringBuilder();
             urlBuilder.append("https://farm");
-            urlBuilder.append(image.getFarm());
+            urlBuilder.append(flickrImagesList.get(i).getFarm());
             urlBuilder.append(".staticflickr.com/");
-            urlBuilder.append(image.getServer());
-            urlBuilder.append("/" + image.getId() + "_");
-            urlBuilder.append(image.getSecret() + ".jpg");
-        }
+            urlBuilder.append(flickrImagesList.get(i).getServer());
+            urlBuilder.append("/" + flickrImagesList.get(i).getId() + "_");
+            urlBuilder.append(flickrImagesList.get(i).getSecret() + ".jpg");
 
-        Picasso.with(this)
-                .load(urlBuilder.toString())
-                .into(flickrImage);
+            Picasso.with(this)
+                    .load(urlBuilder.toString())
+                    .into(flickrImages.get(i));
+        }
+        submitButton.setEnabled(true);
     }
 
     @Override
     public void onSearchFail() {
         Toast.makeText(MainActivity.this, "Search failed", Toast.LENGTH_SHORT).show();
+        submitButton.setEnabled(true);
     }
 
     @Override
-    public void showImage() {
-        flickrImage.setVisibility(View.VISIBLE);
+    public void showImageLoadFailure(String error) {
+        //make error textview visible
     }
 
     @Override
-    public void hideImage() {
-        flickrImage.setVisibility(View.INVISIBLE);
+    public void showImages() {
+        if (flickrImages.size() > 0) {
+            for (ImageView flickrImage : flickrImages) {
+                flickrImage.setVisibility(View.VISIBLE);
+            }
+        }
+    }
+
+    @Override
+    public void hideImages() {
+        if (flickrImages.size() > 0) {
+            for (ImageView flickrImage : flickrImages) {
+                flickrImage.setVisibility(View.INVISIBLE);
+            }
+        }
     }
 
     @Override
     public void onSearchStart(String query) {
         mPresenter.searchForImages(query);
-    }
-
-    @Override
-    public void onSearchFinished() {
-
+        submitButton.setEnabled(false);
     }
 
     @Override

@@ -85,6 +85,8 @@ public class AppModule {
                 //Add api key
                 HttpUrl urlWithKey = original.url().newBuilder()
                         .addQueryParameter("api_key", app.getString(R.string.key))
+                        .addQueryParameter("format", "json")
+                        .addQueryParameter("nojsoncallback","1")
                         .build();
 
                 Request.Builder requestBuilder = original.newBuilder()

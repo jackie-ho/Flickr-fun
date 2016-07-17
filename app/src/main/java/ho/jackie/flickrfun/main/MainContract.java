@@ -13,10 +13,11 @@ public interface MainContract {
         void onNetworkReconnect();
         void onSearchSuccess(FlickrPhotos photos);
         void onSearchFail();
-        void showImage();
-        void hideImage();
+        void showImageLoadFailure(String errorMessage);
+        void showImages();
+        void hideImages();
         void onSearchStart(String query);
-        void onSearchFinished();
+
     }
 
     interface ActionListener{

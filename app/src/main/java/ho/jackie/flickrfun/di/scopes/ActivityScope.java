@@ -5,5 +5,5 @@ import java.lang.annotation.Retention;
 import javax.inject.Scope;
 
 @Scope
-public @interface UserScope {
+public @interface ActivityScope {
 }
