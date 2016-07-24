@@ -1,6 +1,7 @@
 package ho.jackie.flickrfun.di.modules;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.net.Uri;
 
 import com.squareup.picasso.Picasso;
@@ -39,9 +40,4 @@ public class ActivityModule {
         return builder.build();
     }
 
-    @Provides
-    @ActivityScope
-    public MainPresenter providesPresenter(){
-       return new MainPresenter(view);
-    }
 }

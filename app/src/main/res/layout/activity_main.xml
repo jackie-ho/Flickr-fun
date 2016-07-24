@@ -20,6 +20,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"/>
+
 <LinearLayout
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -28,11 +29,15 @@
         android:id="@+id/flickr_image1"
         android:layout_width="150dp"
         android:layout_height="150dp"
+        android:background="#000000"
+        android:layout_margin="10dp"
         android:layout_marginTop="15dp"/>
     <ImageView
         android:id="@+id/flickr_image2"
         android:layout_width="150dp"
         android:layout_height="150dp"
+        android:layout_margin="10dp"
+        android:background="#000000"
         android:layout_marginTop="15dp"/>
 </LinearLayout>
     <LinearLayout

@@ -1,5 +1,6 @@
 package ho.jackie.flickrfun.main;
 
+import android.content.SharedPreferences;
 import android.support.annotation.NonNull;
 
 import java.lang.ref.WeakReference;
@@ -24,8 +25,7 @@ import rx.schedulers.Schedulers;
  */
 public class MainPresenter implements MainContract.ActionListener {
 
-    @Inject
-    Retrofit retrofit;
+    Retrofit mRetrofit;
 
     private FlickrApi mFlickrApi;
 
@@ -35,10 +35,11 @@ public class MainPresenter implements MainContract.ActionListener {
 
     private Map<String, String> queryMap;
 
-    public MainPresenter(@NonNull MainContract.View view){
+    public MainPresenter(@NonNull MainContract.View view, SharedPreferences sharedPreferences, Retrofit retrofit){
         this.mainView = new WeakReference<MainContract.View>(view);
         queryMap = new HashMap<>();
-        mFlickrApi = retrofit.create(FlickrApi.class);
+        mRetrofit = retrofit;
+        mFlickrApi = mRetrofit.create(FlickrApi.class);
     }
 
     @Override
@@ -64,11 +65,12 @@ public class MainPresenter implements MainContract.ActionListener {
     @Override
     public void searchForImages(String query) {
         queryMap.clear();
-        queryMap.put("query",query);
-        mFlickrSubscription = mFlickrApi.images(queryMap, "photos","search")
-                .observeOn(Schedulers.newThread())
-                .subscribeOn(AndroidSchedulers.mainThread())
-                .take(4)
+        queryMap.put("tags",query);
+        queryMap.put("method", "flickr.photos.search");
+        mFlickrSubscription = mFlickrApi.images(queryMap)
+                .take(1)
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<FlickrPhotos>() {
                     @Override
                     public void onCompleted() {
@@ -82,8 +84,11 @@ public class MainPresenter implements MainContract.ActionListener {
 
                     @Override
                     public void onNext(FlickrPhotos flickrPhotos) {
-                        mainView.get().onSearchSuccess(flickrPhotos);
-
+                        if (flickrPhotos.getTotal() > 0) {
+                            mainView.get().onSearchSuccess(flickrPhotos);
+                        } else {
+                            onError(new Throwable());
+                        }
                     }
                 });
     }

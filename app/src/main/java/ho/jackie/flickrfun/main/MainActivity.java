@@ -1,5 +1,6 @@
 package ho.jackie.flickrfun.main;
 
+import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -17,7 +18,11 @@ import javax.inject.Inject;
 import butterknife.BindView;
 import butterknife.BindViews;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import ho.jackie.flickrfun.R;
+import ho.jackie.flickrfun.app.MyApp;
+import ho.jackie.flickrfun.di.components.DaggerActivityComponent;
+import ho.jackie.flickrfun.di.modules.ActivityModule;
 import ho.jackie.flickrfun.retrofit.model.FlickrImages;
 import ho.jackie.flickrfun.retrofit.model.FlickrPhotos;
 import retrofit2.Retrofit;
@@ -31,8 +36,13 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
     @BindViews({R.id.flickr_image1, R.id.flickr_image2, R.id.flickr_image3, R.id.flickr_image4})
     List<ImageView> flickrImages;
 
+    @Inject
+    SharedPreferences mSharedPreferences;
 
-    private MainPresenter mPresenter;
+    @Inject
+    Retrofit mRetrofit;
+
+    MainPresenter mPresenter;
     private Picasso.Builder picassoBuilder;
 
     @Override
@@ -41,7 +51,13 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
 
-        mPresenter = new MainPresenter(this);
+        DaggerActivityComponent.builder()
+                .appComponent(((MyApp) getApplicationContext()).getAppComponent())
+                .activityModule(new ActivityModule(this, this))
+                .build()
+                .inject(this);
+
+        mPresenter = new MainPresenter(this, mSharedPreferences, mRetrofit);
 
     }
 
@@ -59,6 +75,7 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
     public void onSearchSuccess(FlickrPhotos photos) {
 
         List<FlickrImages> flickrImagesList = photos.getPhotos();
+
 
         for (int i = 0; i < 4; i++) {
 
@@ -128,5 +145,10 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
     protected void onDestroy() {
         mPresenter.onDestroy();
         super.onDestroy();
+    }
+
+    @OnClick (R.id.submit_search)
+    void submitQuery(){
+        onSearchStart(searchEditText.getText().toString());
     }
 }

@@ -18,10 +18,9 @@ import rx.Observable;
 public interface FlickrApi {
 
 
-    @GET("/rest/?methods=flickr.{item}.{method}")
-    Observable<FlickrPhotos> images(@QueryMap Map<String, String> options,
-                                    @Path("item") String item,
-                                    @Path("method") String method);
+    @GET("rest/")
+    Observable<FlickrPhotos> images(@QueryMap Map<String, String> options
+                                    );
 
 
 }

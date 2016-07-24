@@ -20,6 +20,7 @@ import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
+import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
@@ -34,7 +35,7 @@ public class AppModule {
     private final Application app;
 
     private static final String PREFERENCES = "myAppPrefs";
-    private final String BASE_URL = "https://api.flickr.com/services";
+    private final String BASE_URL = "https://api.flickr.com/services/";
 
 
     private final OkHttpClient.Builder okHttpClient = new OkHttpClient.Builder();
@@ -77,6 +78,9 @@ public class AppModule {
     }
 
     private OkHttpClient setupOkHttp() {
+        HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor();
+        loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
+
         okHttpClient.addInterceptor(new Interceptor() {
             @Override
             public Response intercept(Chain chain) throws IOException {
@@ -90,7 +94,6 @@ public class AppModule {
                         .build();
 
                 Request.Builder requestBuilder = original.newBuilder()
-                        .header("Authorization", "not necessary")
                         .method(original.method(), original.body())
                         .url(urlWithKey);
 
@@ -98,6 +101,7 @@ public class AppModule {
                 return chain.proceed(request);
             }
         });
+        okHttpClient.addInterceptor(loggingInterceptor);
         return okHttpClient.build();
     }
 }
