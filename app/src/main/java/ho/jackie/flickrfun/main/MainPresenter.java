@@ -14,6 +14,7 @@ import javax.inject.Inject;
 import ho.jackie.flickrfun.retrofit.FlickrApi;
 import ho.jackie.flickrfun.retrofit.model.FlickrImages;
 import ho.jackie.flickrfun.retrofit.model.FlickrPhotos;
+import ho.jackie.flickrfun.retrofit.model.FlickrResult;
 import retrofit2.Retrofit;
 import rx.Observer;
 import rx.Subscription;
@@ -71,7 +72,7 @@ public class MainPresenter implements MainContract.ActionListener {
                 .take(1)
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<FlickrPhotos>() {
+                .subscribe(new Observer<FlickrResult>() {
                     @Override
                     public void onCompleted() {
 
@@ -83,12 +84,19 @@ public class MainPresenter implements MainContract.ActionListener {
                     }
 
                     @Override
-                    public void onNext(FlickrPhotos flickrPhotos) {
-                        if (flickrPhotos.getTotal() > 0) {
-                            mainView.get().onSearchSuccess(flickrPhotos);
+                    public void onNext(FlickrResult flickrResult) {
+                        FlickrPhotos flickrPhotos;
+                        if (flickrResult != null) {
+                            flickrPhotos = flickrResult.getSearchResult();
+                            if (flickrPhotos.getTotal() > 0) {
+                                mainView.get().onSearchSuccess(flickrPhotos);
+                            } else {
+                                onError(new Throwable());
+                            }
                         } else {
                             onError(new Throwable());
                         }
+
                     }
                 });
     }

@@ -5,6 +5,7 @@ import java.util.Map;
 
 import ho.jackie.flickrfun.retrofit.model.FlickrImages;
 import ho.jackie.flickrfun.retrofit.model.FlickrPhotos;
+import ho.jackie.flickrfun.retrofit.model.FlickrResult;
 import retrofit2.http.GET;
 import retrofit2.http.Part;
 import retrofit2.http.Path;
@@ -19,7 +20,7 @@ public interface FlickrApi {
 
 
     @GET("rest/")
-    Observable<FlickrPhotos> images(@QueryMap Map<String, String> options
+    Observable<FlickrResult> images(@QueryMap Map<String, String> options
                                     );
 
 
