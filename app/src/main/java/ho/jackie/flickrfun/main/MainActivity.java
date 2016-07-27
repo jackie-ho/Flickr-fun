@@ -95,8 +95,8 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
     }
 
     @Override
-    public void onSearchFail() {
-        Toast.makeText(MainActivity.this, "Search failed", Toast.LENGTH_SHORT).show();
+    public void onSearchFail(String error) {
+        Toast.makeText(MainActivity.this, "Search failed. \n"+ error, Toast.LENGTH_SHORT).show();
         submitButton.setEnabled(true);
     }
 

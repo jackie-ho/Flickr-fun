@@ -12,7 +12,7 @@ public interface MainContract {
         void onNetworkLost();
         void onNetworkReconnect();
         void onSearchSuccess(FlickrPhotos photos);
-        void onSearchFail();
+        void onSearchFail(String error);
         void showImageLoadFailure(String errorMessage);
         void showImages();
         void hideImages();
@@ -21,7 +21,6 @@ public interface MainContract {
     }
 
     interface ActionListener{
-        void addPicture();
         void onResume();
         void onPause();
         void onDestroy();

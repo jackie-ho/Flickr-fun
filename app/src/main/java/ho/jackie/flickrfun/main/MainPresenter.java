@@ -36,16 +36,11 @@ public class MainPresenter implements MainContract.ActionListener {
 
     private Map<String, String> queryMap;
 
-    public MainPresenter(@NonNull MainContract.View view, SharedPreferences sharedPreferences, Retrofit retrofit){
+    public MainPresenter(@NonNull MainContract.View view, SharedPreferences sharedPreferences, Retrofit retrofit) {
         this.mainView = new WeakReference<MainContract.View>(view);
         queryMap = new HashMap<>();
         mRetrofit = retrofit;
         mFlickrApi = mRetrofit.create(FlickrApi.class);
-    }
-
-    @Override
-    public void addPicture() {
-
     }
 
     @Override
@@ -56,6 +51,9 @@ public class MainPresenter implements MainContract.ActionListener {
     @Override
     public void onPause() {
         //unsubscribe subscriptions
+        if (mFlickrSubscription != null) {
+            mFlickrSubscription.unsubscribe();
+        }
     }
 
     @Override
@@ -66,7 +64,7 @@ public class MainPresenter implements MainContract.ActionListener {
     @Override
     public void searchForImages(String query) {
         queryMap.clear();
-        queryMap.put("tags",query);
+        queryMap.put("tags", query);
         queryMap.put("method", "flickr.photos.search");
         mFlickrSubscription = mFlickrApi.images(queryMap)
                 .take(1)
@@ -80,7 +78,7 @@ public class MainPresenter implements MainContract.ActionListener {
 
                     @Override
                     public void onError(Throwable e) {
-                        mainView.get().onSearchFail();
+                        mainView.get().onSearchFail(e.getMessage());
                     }
 
                     @Override
