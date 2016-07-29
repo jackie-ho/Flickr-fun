@@ -36,8 +36,11 @@ public class MainPresenter implements MainContract.ActionListener {
 
     private Map<String, String> queryMap;
 
-    public MainPresenter(@NonNull MainContract.View view, SharedPreferences sharedPreferences, Retrofit retrofit) {
+    private SharedPreferences mSharedPrefs;
+
+    public MainPresenter(@NonNull MainContract.View view, @NonNull SharedPreferences sharedPreferences,@NonNull Retrofit retrofit) {
         this.mainView = new WeakReference<MainContract.View>(view);
+        this.mSharedPrefs = sharedPreferences;
         queryMap = new HashMap<>();
         mRetrofit = retrofit;
         mFlickrApi = mRetrofit.create(FlickrApi.class);
