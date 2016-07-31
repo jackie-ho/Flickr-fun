@@ -4,16 +4,10 @@ import android.content.SharedPreferences;
 import android.support.annotation.NonNull;
 
 import java.lang.ref.WeakReference;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
-import javax.inject.Inject;
-
 import ho.jackie.flickrfun.retrofit.FlickrApi;
-import ho.jackie.flickrfun.retrofit.model.FlickrImages;
-import ho.jackie.flickrfun.retrofit.model.FlickrPhotos;
 import ho.jackie.flickrfun.retrofit.model.FlickrResult;
 import retrofit2.Retrofit;
 import rx.Observer;
@@ -38,7 +32,9 @@ public class MainPresenter implements MainContract.ActionListener {
 
     private SharedPreferences mSharedPrefs;
 
-    public MainPresenter(@NonNull MainContract.View view, @NonNull SharedPreferences sharedPreferences,@NonNull Retrofit retrofit) {
+    private FlickrResult flickrSavedResult;
+
+    public MainPresenter(@NonNull MainContract.View view, @NonNull SharedPreferences sharedPreferences, @NonNull Retrofit retrofit) {
         this.mainView = new WeakReference<MainContract.View>(view);
         this.mSharedPrefs = sharedPreferences;
         queryMap = new HashMap<>();
@@ -46,9 +42,12 @@ public class MainPresenter implements MainContract.ActionListener {
         mFlickrApi = mRetrofit.create(FlickrApi.class);
     }
 
+
     @Override
     public void onResume() {
-
+        if (flickrSavedResult != null) {
+            mainView.get().loadImage(flickrSavedResult.getSearchResult());
+        }
     }
 
     @Override
@@ -62,6 +61,7 @@ public class MainPresenter implements MainContract.ActionListener {
     @Override
     public void onDestroy() {
         mainView.clear();
+
     }
 
     @Override
@@ -86,18 +86,12 @@ public class MainPresenter implements MainContract.ActionListener {
 
                     @Override
                     public void onNext(FlickrResult flickrResult) {
-                        FlickrPhotos flickrPhotos;
-                        if (flickrResult != null) {
-                            flickrPhotos = flickrResult.getSearchResult();
-                            if (flickrPhotos.getTotal() > 0) {
-                                mainView.get().onSearchSuccess(flickrPhotos);
-                            } else {
-                                onError(new Throwable());
-                            }
+                        if (flickrResult != null & flickrResult.getSearchResult().getTotal() > 0) {
+                            mainView.get().onSearchSuccess(flickrResult);
+                            flickrSavedResult = flickrResult;
                         } else {
                             onError(new Throwable());
                         }
-
                     }
                 });
     }

@@ -25,6 +25,7 @@ import ho.jackie.flickrfun.di.components.DaggerActivityComponent;
 import ho.jackie.flickrfun.di.modules.ActivityModule;
 import ho.jackie.flickrfun.retrofit.model.FlickrImages;
 import ho.jackie.flickrfun.retrofit.model.FlickrPhotos;
+import ho.jackie.flickrfun.retrofit.model.FlickrResult;
 import retrofit2.Retrofit;
 
 public class MainActivity extends AppCompatActivity implements MainContract.View {
@@ -64,39 +65,26 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
     @Override
     public void onNetworkLost() {
         //display textview and progressbar
+        submitButton.setEnabled(false);
     }
 
     @Override
     public void onNetworkReconnect() {
         //hide textview and progressbar, display image if there is one
-    }
-
-    @Override
-    public void onSearchSuccess(FlickrPhotos photos) {
-
-        List<FlickrImages> flickrImagesList = photos.getPhotos();
-
-
-        for (int i = 0; i < 4; i++) {
-
-            StringBuilder urlBuilder = new StringBuilder();
-            urlBuilder.append("https://farm");
-            urlBuilder.append(flickrImagesList.get(i).getFarm());
-            urlBuilder.append(".staticflickr.com/");
-            urlBuilder.append(flickrImagesList.get(i).getServer());
-            urlBuilder.append("/" + flickrImagesList.get(i).getId() + "_");
-            urlBuilder.append(flickrImagesList.get(i).getSecret() + ".jpg");
-
-            Picasso.with(this)
-                    .load(urlBuilder.toString())
-                    .into(flickrImages.get(i));
-        }
         submitButton.setEnabled(true);
     }
 
     @Override
+    public void onSearchSuccess(FlickrResult result) {
+        if (result != null) {
+            loadImage(result.getSearchResult());
+        }
+
+    }
+
+    @Override
     public void onSearchFail(String error) {
-        Toast.makeText(MainActivity.this, "Search failed. \n"+ error, Toast.LENGTH_SHORT).show();
+        Toast.makeText(MainActivity.this, "Search failed. \n" + error, Toast.LENGTH_SHORT).show();
         submitButton.setEnabled(true);
     }
 
@@ -130,6 +118,32 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
     }
 
     @Override
+    public void loadImage(FlickrPhotos photos) {
+        List<FlickrImages> flickrImagesList;
+        if (photos == null) {
+            return;
+        }
+
+        flickrImagesList = photos.getPhotos();
+
+        for (int i = 0; i < 4; i++) {
+
+            StringBuilder urlBuilder = new StringBuilder();
+            urlBuilder.append("https://farm");
+            urlBuilder.append(flickrImagesList.get(i).getFarm());
+            urlBuilder.append(".staticflickr.com/");
+            urlBuilder.append(flickrImagesList.get(i).getServer());
+            urlBuilder.append("/" + flickrImagesList.get(i).getId() + "_");
+            urlBuilder.append(flickrImagesList.get(i).getSecret() + ".jpg");
+
+            Picasso.with(this)
+                    .load(urlBuilder.toString())
+                    .into(flickrImages.get(i));
+        }
+        submitButton.setEnabled(true);
+    }
+
+    @Override
     protected void onResume() {
         super.onResume();
         mPresenter.onResume();
@@ -147,8 +161,8 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
         super.onDestroy();
     }
 
-    @OnClick (R.id.submit_search)
-    void submitQuery(){
+    @OnClick(R.id.submit_search)
+    void submitQuery() {
         onSearchStart(searchEditText.getText().toString());
     }
 }
