@@ -42,8 +42,8 @@ public class MainPresenter implements MainContract.ActionListener {
 
     @Override
     public void onCreate(Bundle cache) {
-        if (cache.get(MainActivity.SAVED_IMAGES) != null){
-            ArrayList<FlickrImages> savedImageList = cache.getParcelable(MainActivity.SAVED_IMAGES);
+        if (cache != null){
+            ArrayList<FlickrImages> savedImageList = cache.getParcelableArrayList(MainActivity.SAVED_IMAGES);
             mainView.get().loadImage(savedImageList);
         }
     }
@@ -84,7 +84,7 @@ public class MainPresenter implements MainContract.ActionListener {
 
                     @Override
                     public void onNext(FlickrResult flickrResult) {
-                        if (flickrResult != null & flickrResult.getSearchResult().getTotal() > 0) {
+                        if (flickrResult != null && flickrResult.getSearchResult() != null && flickrResult.getSearchResult().getTotal() > 0) {
                             mainView.get().onSearchSuccess(flickrResult);
                         } else {
                             onError(new Throwable());

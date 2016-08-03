@@ -12,6 +12,7 @@ import javax.inject.Named;
 
 import dagger.Module;
 import dagger.Provides;
+import ho.jackie.flickrfun.BuildConfig;
 import ho.jackie.flickrfun.R;
 import ho.jackie.flickrfun.app.MyApp;
 import ho.jackie.flickrfun.di.scopes.AppScope;
@@ -86,7 +87,7 @@ public class AppModule {
 
                 //Add api key
                 HttpUrl urlWithKey = original.url().newBuilder()
-                        .addQueryParameter("api_key", app.getString(R.string.key))
+                        .addQueryParameter("api_key", BuildConfig.FLICKR_API_KEY)
                         .addQueryParameter("format", "json")
                         .addQueryParameter("nojsoncallback","1")
                         .build();

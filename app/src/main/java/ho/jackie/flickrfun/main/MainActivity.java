@@ -41,7 +41,7 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
     @BindView(R.id.submit_search)
     Button submitButton;
     @BindViews({R.id.flickr_image1, R.id.flickr_image2, R.id.flickr_image3, R.id.flickr_image4})
-    ArrayList<ImageView> flickrImages;
+    List<ImageView> flickrImages;
 
     @Inject
     SharedPreferences mSharedPreferences;
@@ -49,7 +49,6 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
     @Inject
     Retrofit mRetrofit;
 
-    private Bundle mCachedImage;
     private MainPresenter mPresenter;
     private Picasso.Builder picassoBuilder;
     private ArrayList<FlickrImages> flickrImagesList;
@@ -68,6 +67,8 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
                 .inject(this);
 
         mPresenter = new MainPresenter(this, mSharedPreferences, mRetrofit);
+
+        mPresenter.onCreate(savedInstanceState);
 
     }
 
@@ -156,11 +157,17 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
     }
 
     @Override
-    public void onSaveInstanceState(Bundle outState, PersistableBundle outPersistentState) {
-        super.onSaveInstanceState(outState, outPersistentState);
+    public void onSaveInstanceState(Bundle outState) {
+
         if (imageLoaded){
             outState.putParcelableArrayList(SAVED_IMAGES, flickrImagesList);
         }
+        super.onSaveInstanceState(outState);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
     }
 
     @Override
