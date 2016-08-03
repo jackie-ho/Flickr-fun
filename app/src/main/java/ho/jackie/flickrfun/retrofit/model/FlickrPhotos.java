@@ -1,19 +1,18 @@
 package ho.jackie.flickrfun.retrofit.model;
 
+import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by JHADI on 7/13/16.
- */
+
 public class FlickrPhotos {
 
     int page;
     int pages;
     int perpage;
     int total;
-    List<FlickrImages> photo;
+    ArrayList<FlickrImages> photo;
 
-    public List<FlickrImages> getPhotos() {
+    public ArrayList<FlickrImages> getPhotos() {
         return photo;
     }
 

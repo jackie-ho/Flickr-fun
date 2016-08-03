@@ -1,8 +1,10 @@
 package ho.jackie.flickrfun.main;
 
 import android.content.SharedPreferences;
+import android.os.PersistableBundle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -11,6 +13,7 @@ import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -30,12 +33,15 @@ import retrofit2.Retrofit;
 
 public class MainActivity extends AppCompatActivity implements MainContract.View {
 
+    public static final String SAVED_IMAGES = "currentImages";
+    private static final String TAG = MainActivity.class.getSimpleName();
+
     @BindView(R.id.image_search_edit)
     EditText searchEditText;
     @BindView(R.id.submit_search)
     Button submitButton;
     @BindViews({R.id.flickr_image1, R.id.flickr_image2, R.id.flickr_image3, R.id.flickr_image4})
-    List<ImageView> flickrImages;
+    ArrayList<ImageView> flickrImages;
 
     @Inject
     SharedPreferences mSharedPreferences;
@@ -43,8 +49,11 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
     @Inject
     Retrofit mRetrofit;
 
-    MainPresenter mPresenter;
+    private Bundle mCachedImage;
+    private MainPresenter mPresenter;
     private Picasso.Builder picassoBuilder;
+    private ArrayList<FlickrImages> flickrImagesList;
+    private boolean imageLoaded;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,7 +86,7 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
     @Override
     public void onSearchSuccess(FlickrResult result) {
         if (result != null) {
-            loadImage(result.getSearchResult());
+            loadImage(result.getSearchResult().getPhotos());
         }
 
     }
@@ -85,6 +94,7 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
     @Override
     public void onSearchFail(String error) {
         Toast.makeText(MainActivity.this, "Search failed. \n" + error, Toast.LENGTH_SHORT).show();
+        Log.e(TAG, error);
         submitButton.setEnabled(true);
     }
 
@@ -118,13 +128,13 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
     }
 
     @Override
-    public void loadImage(FlickrPhotos photos) {
-        List<FlickrImages> flickrImagesList;
+    public void loadImage(ArrayList<FlickrImages> photos) {
+
         if (photos == null) {
             return;
         }
 
-        flickrImagesList = photos.getPhotos();
+        flickrImagesList = photos;
 
         for (int i = 0; i < 4; i++) {
 
@@ -139,14 +149,18 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
             Picasso.with(this)
                     .load(urlBuilder.toString())
                     .into(flickrImages.get(i));
+
         }
         submitButton.setEnabled(true);
+        imageLoaded = true;
     }
 
     @Override
-    protected void onResume() {
-        super.onResume();
-        mPresenter.onResume();
+    public void onSaveInstanceState(Bundle outState, PersistableBundle outPersistentState) {
+        super.onSaveInstanceState(outState, outPersistentState);
+        if (imageLoaded){
+            outState.putParcelableArrayList(SAVED_IMAGES, flickrImagesList);
+        }
     }
 
     @Override

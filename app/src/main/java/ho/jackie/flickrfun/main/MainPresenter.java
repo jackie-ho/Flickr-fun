@@ -1,13 +1,17 @@
 package ho.jackie.flickrfun.main;
 
 import android.content.SharedPreferences;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 
 import java.lang.ref.WeakReference;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import ho.jackie.flickrfun.retrofit.FlickrApi;
+import ho.jackie.flickrfun.retrofit.model.FlickrImages;
 import ho.jackie.flickrfun.retrofit.model.FlickrResult;
 import retrofit2.Retrofit;
 import rx.Observer;
@@ -15,24 +19,17 @@ import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
-/**
- * Created by JHADI on 7/10/16.
- */
+
 public class MainPresenter implements MainContract.ActionListener {
 
     Retrofit mRetrofit;
 
     private FlickrApi mFlickrApi;
-
     private Subscription mFlickrSubscription;
-
     private final WeakReference<MainContract.View> mainView;
-
     private Map<String, String> queryMap;
-
     private SharedPreferences mSharedPrefs;
 
-    private FlickrResult flickrSavedResult;
 
     public MainPresenter(@NonNull MainContract.View view, @NonNull SharedPreferences sharedPreferences, @NonNull Retrofit retrofit) {
         this.mainView = new WeakReference<MainContract.View>(view);
@@ -44,9 +41,10 @@ public class MainPresenter implements MainContract.ActionListener {
 
 
     @Override
-    public void onResume() {
-        if (flickrSavedResult != null) {
-            mainView.get().loadImage(flickrSavedResult.getSearchResult());
+    public void onCreate(Bundle cache) {
+        if (cache.get(MainActivity.SAVED_IMAGES) != null){
+            ArrayList<FlickrImages> savedImageList = cache.getParcelable(MainActivity.SAVED_IMAGES);
+            mainView.get().loadImage(savedImageList);
         }
     }
 
@@ -88,7 +86,6 @@ public class MainPresenter implements MainContract.ActionListener {
                     public void onNext(FlickrResult flickrResult) {
                         if (flickrResult != null & flickrResult.getSearchResult().getTotal() > 0) {
                             mainView.get().onSearchSuccess(flickrResult);
-                            flickrSavedResult = flickrResult;
                         } else {
                             onError(new Throwable());
                         }

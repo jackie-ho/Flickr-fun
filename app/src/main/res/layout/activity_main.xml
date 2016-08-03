@@ -98,4 +98,13 @@
             android:id="@+id/flickr_image4_error_text"/>
     </LinearLayout>
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/search_events_textview"
+        android:layout_gravity="center_horizontal"
+        android:text="boo"
+        android:layout_marginTop="15dp"
+        android:textSize="20sp"/>
+
 </LinearLayout>

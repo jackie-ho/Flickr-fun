@@ -13,15 +13,9 @@ import retrofit2.http.Query;
 import retrofit2.http.QueryMap;
 import rx.Observable;
 
-/**
- * Created by JHADI on 7/11/16.
- */
 public interface FlickrApi {
 
-
     @GET("rest/")
-    Observable<FlickrResult> images(@QueryMap Map<String, String> options
-                                    );
-
+    Observable<FlickrResult> images(@QueryMap Map<String, String> options);
 
 }

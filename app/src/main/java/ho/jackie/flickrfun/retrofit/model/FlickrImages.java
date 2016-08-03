@@ -1,9 +1,10 @@
 package ho.jackie.flickrfun.retrofit.model;
 
-/**
- * Created by JHADI on 7/11/16.
- */
-public class FlickrImages {
+import android.os.Parcel;
+import android.os.Parcelable;
+
+
+public class FlickrImages implements Parcelable{
 
     String id;
     String owner;
@@ -14,6 +15,30 @@ public class FlickrImages {
     int ispublic;
     int isfriend;
     int isfamily;
+
+    protected FlickrImages(Parcel in) {
+        id = in.readString();
+        owner = in.readString();
+        secret = in.readString();
+        server = in.readString();
+        farm = in.readString();
+        title = in.readString();
+        ispublic = in.readInt();
+        isfriend = in.readInt();
+        isfamily = in.readInt();
+    }
+
+    public static final Creator<FlickrImages> CREATOR = new Creator<FlickrImages>() {
+        @Override
+        public FlickrImages createFromParcel(Parcel in) {
+            return new FlickrImages(in);
+        }
+
+        @Override
+        public FlickrImages[] newArray(int size) {
+            return new FlickrImages[size];
+        }
+    };
 
     public String getId() {
         return id;
@@ -49,5 +74,23 @@ public class FlickrImages {
 
     public int getIsfamily() {
         return isfamily;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(id);
+        dest.writeString(owner);
+        dest.writeString(secret);
+        dest.writeString(server);
+        dest.writeString(farm);
+        dest.writeString(title);
+        dest.writeInt(ispublic);
+        dest.writeInt(isfriend);
+        dest.writeInt(isfamily);
     }
 }

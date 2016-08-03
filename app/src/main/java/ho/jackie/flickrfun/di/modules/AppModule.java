@@ -26,9 +26,7 @@ import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
 import rx.schedulers.Schedulers;
 
-/**
- * Created by JHADI on 7/10/16.
- */
+
 @Module
 public class AppModule {
 

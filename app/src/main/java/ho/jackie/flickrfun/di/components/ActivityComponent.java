@@ -5,9 +5,7 @@ import ho.jackie.flickrfun.di.modules.ActivityModule;
 import ho.jackie.flickrfun.di.scopes.ActivityScope;
 import ho.jackie.flickrfun.main.MainActivity;
 
-/**
- * Created by JHADI on 7/10/16.
- */
+
 @Component (dependencies = AppComponent.class, modules = ActivityModule.class)
 @ActivityScope
 public interface ActivityComponent {

@@ -10,11 +10,8 @@ import dagger.Module;
 import dagger.Provides;
 import ho.jackie.flickrfun.di.scopes.ActivityScope;
 import ho.jackie.flickrfun.main.MainContract;
-import ho.jackie.flickrfun.main.MainPresenter;
 
-/**
- * Created by JHADI on 7/17/16.
- */
+
 @Module
 public class ActivityModule {
 
