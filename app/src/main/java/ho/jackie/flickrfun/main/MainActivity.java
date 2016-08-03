@@ -1,14 +1,18 @@
 package ho.jackie.flickrfun.main;
 
+import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.res.Resources;
 import android.os.PersistableBundle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
@@ -34,12 +38,15 @@ import retrofit2.Retrofit;
 public class MainActivity extends AppCompatActivity implements MainContract.View {
 
     public static final String SAVED_IMAGES = "currentImages";
+    public static final String QUERY = "queryItem";
     private static final String TAG = MainActivity.class.getSimpleName();
 
     @BindView(R.id.image_search_edit)
     EditText searchEditText;
     @BindView(R.id.submit_search)
     Button submitButton;
+    @BindView(R.id.search_events_textview)
+    TextView numberSearchesText;
     @BindViews({R.id.flickr_image1, R.id.flickr_image2, R.id.flickr_image3, R.id.flickr_image4})
     List<ImageView> flickrImages;
 
@@ -53,6 +60,7 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
     private Picasso.Builder picassoBuilder;
     private ArrayList<FlickrImages> flickrImagesList;
     private boolean imageLoaded;
+    private String queryItem;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -157,18 +165,23 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
     }
 
     @Override
-    public void onSaveInstanceState(Bundle outState) {
+    public void displayNumberOfSearchesText(String query) {
+        queryItem = query;
+        int number = mSharedPreferences.getInt(query,-1);
+        Resources res = getResources();
+        numberSearchesText.setText(res.getQuantityString(R.plurals.number_of_searches, number, number, query));
 
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
         if (imageLoaded){
             outState.putParcelableArrayList(SAVED_IMAGES, flickrImagesList);
+            outState.putString(QUERY, queryItem);
         }
         super.onSaveInstanceState(outState);
     }
 
-    @Override
-    protected void onRestoreInstanceState(Bundle savedInstanceState) {
-        super.onRestoreInstanceState(savedInstanceState);
-    }
 
     @Override
     protected void onPause() {
@@ -185,5 +198,8 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
     @OnClick(R.id.submit_search)
     void submitQuery() {
         onSearchStart(searchEditText.getText().toString());
+        searchEditText.clearFocus();
     }
+
+
 }

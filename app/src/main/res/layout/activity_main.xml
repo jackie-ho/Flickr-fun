@@ -103,8 +103,8 @@
         android:layout_height="wrap_content"
         android:id="@+id/search_events_textview"
         android:layout_gravity="center_horizontal"
-        android:text="boo"
         android:layout_marginTop="15dp"
+        android:textColor="#000000"
         android:textSize="20sp"/>
 
 </LinearLayout>

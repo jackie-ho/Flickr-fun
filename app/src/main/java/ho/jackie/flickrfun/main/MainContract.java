@@ -21,6 +21,7 @@ public interface MainContract {
         void hideImages();
         void onSearchStart(String query);
         void loadImage(ArrayList<FlickrImages> photos);
+        void displayNumberOfSearchesText(String query);
 
     }
 

@@ -2,7 +2,7 @@
     <string name="app_name">Flickr Fun</string>
     <string name="error_text">Error loading image</string>
     <plurals name="number_of_searches">
-        <item quantity="one">Your first search for %s</item>
-        <item quantity="other">%1$s times searched for %2$s.</item>
+        <item quantity="one">Your first search for %2$s</item>
+        <item quantity="other">%1$d times searched for %2$s.</item>
     </plurals>
 </resources>

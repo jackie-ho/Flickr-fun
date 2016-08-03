@@ -3,6 +3,7 @@ package ho.jackie.flickrfun.main;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.view.inputmethod.InputMethodManager;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -22,7 +23,7 @@ import rx.schedulers.Schedulers;
 
 public class MainPresenter implements MainContract.ActionListener {
 
-    Retrofit mRetrofit;
+    private final Retrofit mRetrofit;
 
     private FlickrApi mFlickrApi;
     private Subscription mFlickrSubscription;
@@ -42,9 +43,11 @@ public class MainPresenter implements MainContract.ActionListener {
 
     @Override
     public void onCreate(Bundle cache) {
-        if (cache != null){
+        if (cache != null) {
             ArrayList<FlickrImages> savedImageList = cache.getParcelableArrayList(MainActivity.SAVED_IMAGES);
+            String queryTerm = cache.getString(MainActivity.QUERY);
             mainView.get().loadImage(savedImageList);
+            mainView.get().displayNumberOfSearchesText(queryTerm);
         }
     }
 
@@ -63,7 +66,7 @@ public class MainPresenter implements MainContract.ActionListener {
     }
 
     @Override
-    public void searchForImages(String query) {
+    public void searchForImages(final String query) {
         queryMap.clear();
         queryMap.put("tags", query);
         queryMap.put("method", "flickr.photos.search");
@@ -74,7 +77,9 @@ public class MainPresenter implements MainContract.ActionListener {
                 .subscribe(new Observer<FlickrResult>() {
                     @Override
                     public void onCompleted() {
-
+                        int numSearches = mSharedPrefs.contains(query) ? mSharedPrefs.getInt(query, 0) : 0;
+                        mSharedPrefs.edit().putInt(query, ++numSearches).commit();
+                        mainView.get().displayNumberOfSearchesText(query);
                     }
 
                     @Override
@@ -92,4 +97,6 @@ public class MainPresenter implements MainContract.ActionListener {
                     }
                 });
     }
+
+
 }
