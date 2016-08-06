@@ -1,14 +1,11 @@
 package ho.jackie.flickrfun.main;
 
-import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
-import android.os.PersistableBundle;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -31,7 +28,6 @@ import ho.jackie.flickrfun.app.MyApp;
 import ho.jackie.flickrfun.di.components.DaggerActivityComponent;
 import ho.jackie.flickrfun.di.modules.ActivityModule;
 import ho.jackie.flickrfun.retrofit.model.FlickrImages;
-import ho.jackie.flickrfun.retrofit.model.FlickrPhotos;
 import ho.jackie.flickrfun.retrofit.model.FlickrResult;
 import retrofit2.Retrofit;
 
@@ -102,7 +98,7 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
 
     @Override
     public void onSearchFail(String error) {
-        Toast.makeText(MainActivity.this, "Search failed. \n" + error, Toast.LENGTH_SHORT).show();
+        Toast.makeText(MainActivity.this, "Search failed. \n" + error, Toast.LENGTH_LONG).show();
         Log.e(TAG, error);
         submitButton.setEnabled(true);
     }
@@ -198,7 +194,6 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
     @OnClick(R.id.submit_search)
     void submitQuery() {
         onSearchStart(searchEditText.getText().toString());
-        searchEditText.clearFocus();
     }
 
 

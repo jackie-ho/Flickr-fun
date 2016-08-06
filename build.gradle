@@ -23,10 +23,34 @@ task clean(type: Delete) {
 }
 
 ext {
-    rxjavaVersion = '1.1.7'
-    daggerVersion = '2.4'
-    retrofitVersion = '2.1.0'
-    gsonconverterVersion = '2.1.0'
-    rxandroidVersion = '1.2.1'
+    libraries = [
+            butterknife: "8.2.1",
+            eventbus   : "3.0.0",
+            picasso    : "2.5.2",
+            support    : "23.4.0",
+            rxjava     : "1.1.7",
+            rxandroid  : "1.2.1",
+            dagger     : "2.4",
+            annotation : "1.0",
+            rxadapter  : "2.1.0",
+            logger     : "3.3.1",
+            retrofit   : "2.1.0",
+            gson       : "2.1.0"
+
+    ]
+    configuration = [
+            package          : "ho.jackie.flickrfun",
+            buildToolsVersion: "23.0.3",
+            compileVersion   : 23,
+            minSdk           : 16,
+            targetSdk        : 23,
+            version_code     : 1,
+            version_name     : "0.1",
+    ]
+    testingLibs = [
+            robolectric: "3.1.1",
+            mockito    : "2.0.86-beta",
+            junit      : "4.12"
+    ]
 
 }

@@ -67,6 +67,10 @@ public class MainPresenter implements MainContract.ActionListener {
 
     @Override
     public void searchForImages(final String query) {
+        if (query.trim().length() == 0){
+            mainView.get().onSearchFail("Enter search term");
+            return;
+        }
         queryMap.clear();
         queryMap.put("tags", query);
         queryMap.put("method", "flickr.photos.search");

@@ -1,16 +1,21 @@
 apply plugin: 'com.android.application'
 apply plugin: 'com.neenbedankt.android-apt'
 
+def cfg = rootProject.ext.configuration
+def libs = rootProject.ext.libraries;
+def test = rootProject.ext.testingLibs;
+
 android {
-    compileSdkVersion 23
-    buildToolsVersion "23.0.3"
+    compileSdkVersion cfg.compileVersion
+    buildToolsVersion cfg.buildToolsVersion
 
     defaultConfig {
-        applicationId "ho.jackie.flickrfun"
-        minSdkVersion 16
-        targetSdkVersion 23
-        versionCode 1
-        versionName "1.0"
+        applicationId       cfg.package
+        minSdkVersion       cfg.compileVersion
+        targetSdkVersion    cfg.targetSdk
+        versionCode         cfg.version_code
+        versionName         cfg.version_name
+
 
         buildConfigField "String", "FLICKR_API_KEY", "\"${flickr_api_key}\""
         buildConfigField "String", "FLICKR_SECRET", "\"${flickr_secret}\""
@@ -25,25 +30,26 @@ android {
 
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
-    testCompile 'junit:junit:4.12'
-    compile 'com.android.support:appcompat-v7:23.4.0'
-    compile "io.reactivex:rxjava:$rootProject.ext.rxjavaVersion"
-    compile "io.reactivex:rxandroid:$rootProject.ext.rxandroidVersion"
-    compile 'com.squareup.retrofit2:adapter-rxjava:2.1.0'
-    compile 'com.squareup.okhttp3:logging-interceptor:3.3.1'
+    testCompile "junit:junit:${test.junit}"
+    compile "com.android.support:appcompat-v7:${libs.support}"
+    compile "io.reactivex:rxjava:${libs.rxjava}"
+    compile "io.reactivex:rxandroid:${libs.rxandroid}"
+    compile "com.squareup.retrofit2:adapter-rxjava:${libs.rxadapter}"
+    compile "com.squareup.okhttp3:logging-interceptor:${libs.logger}"
 
-    apt "com.google.dagger:dagger-compiler:$rootProject.ext.daggerVersion"
-    compile "com.google.dagger:dagger:$rootProject.ext.daggerVersion"
-    provided 'javax.annotation:jsr250-api:1.0'
 
-    compile 'org.greenrobot:eventbus:3.0.0'
-    compile "com.squareup.retrofit2:retrofit:$rootProject.ext.retrofitVersion"
-    compile "com.squareup.retrofit2:converter-gson:$rootProject.ext.gsonconverterVersion"
-    compile 'com.jakewharton:butterknife:8.2.1'
-    apt 'com.jakewharton:butterknife-compiler:8.2.1'
+    apt "com.google.dagger:dagger-compiler:${libs.dagger}"
+    compile "com.google.dagger:dagger:${libs.dagger}"
+    provided "javax.annotation:jsr250-api:${libs.annotation}"
 
-    compile 'com.squareup.picasso:picasso:2.5.2'
+    compile "org.greenrobot:eventbus:${libs.eventbus}"
+    compile "com.squareup.retrofit2:retrofit:${libs.retrofit}"
+    compile "com.squareup.retrofit2:converter-gson:${libs.gson}"
+    compile "com.jakewharton:butterknife:${libs.butterknife}"
+    apt "com.jakewharton:butterknife-compiler:${libs.butterknife}"
 
-    testCompile 'org.robolectric:robolectric:3.1.1'
-    testCompile 'org.mockito:mockito-core:2.0.86-beta'
+    compile "com.squareup.picasso:picasso:${libs.picasso}"
+
+    testCompile "org.robolectric:robolectric:${test.robolectric}"
+    testCompile "org.mockito:mockito-core:${test.mockito}"
 }
