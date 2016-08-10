@@ -62,16 +62,9 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        ButterKnife.bind(this);
-
-        DaggerActivityComponent.builder()
-                .appComponent(((MyApp) getApplicationContext()).getAppComponent())
-                .activityModule(new ActivityModule(this, this))
-                .build()
-                .inject(this);
+        daggerAndButterKnifeInit();
 
         mPresenter = new MainPresenter(this, mSharedPreferences, mRetrofit);
-
         mPresenter.onCreate(savedInstanceState);
 
     }
@@ -79,6 +72,7 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
     @Override
     public void onNetworkLost() {
         //display textview and progressbar
+
         submitButton.setEnabled(false);
     }
 
@@ -165,7 +159,9 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
         queryItem = query;
         int number = mSharedPreferences.getInt(query,-1);
         Resources res = getResources();
-        numberSearchesText.setText(res.getQuantityString(R.plurals.number_of_searches, number, number, query));
+        if (number > 0) {
+            numberSearchesText.setText(res.getQuantityString(R.plurals.number_of_searches, number, number, query));
+        }
 
     }
 
@@ -194,6 +190,16 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
     @OnClick(R.id.submit_search)
     void submitQuery() {
         onSearchStart(searchEditText.getText().toString());
+    }
+
+    private void daggerAndButterKnifeInit(){
+        ButterKnife.bind(this);
+
+        DaggerActivityComponent.builder()
+                .appComponent(((MyApp) getApplicationContext()).getAppComponent())
+                .activityModule(new ActivityModule(this, this))
+                .build()
+                .inject(this);
     }
 
 
